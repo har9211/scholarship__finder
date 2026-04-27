@@ -1,6 +1,24 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+
+const SECRET_KEY = "supersecretkey"; // From security.py
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "password123";
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) return res.status(401).json({ error: "Access denied. No token provided." });
+    
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) return res.status(403).json({ error: "Invalid token" });
+        req.user = user;
+        next();
+    });
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -88,6 +106,18 @@ let scholarships = [
 let savedScholarships = {}; // e.g. { 'user123': ['sch1', 'sch3'] }
 
 // --- API Endpoints ---
+
+// Admin Login Route
+app.post('/api/auth/login', (req, res) => {
+    const { username, password } = req.body;
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        // Generating a token as done in create_token
+        const token = jwt.sign({ username, role: 'admin' }, SECRET_KEY, { expiresIn: '1h' });
+        res.json({ access_token: token, token_type: 'bearer' });
+    } else {
+        res.status(401).json({ error: "Invalid credentials" });
+    }
+});
 
 // 1. Get all scholarships (Admin mostly)
 app.get('/api/scholarships', (req, res) => {
@@ -195,7 +225,7 @@ app.get('/api/saved/:userId', (req, res) => {
 });
 
 // Admin Add Scholarship
-app.post('/api/scholarships', (req, res) => {
+app.post('/api/scholarships', authenticateToken, (req, res) => {
     const newSch = req.body;
     newSch.id = 'sch' + (scholarships.length + 1);
     scholarships.push(newSch);
@@ -203,7 +233,7 @@ app.post('/api/scholarships', (req, res) => {
 });
 
 // Admin Delete Scholarship
-app.delete('/api/scholarships/:id', (req, res) => {
+app.delete('/api/scholarships/:id', authenticateToken, (req, res) => {
     scholarships = scholarships.filter(s => s.id !== req.params.id);
     res.json({ success: true });
 });
