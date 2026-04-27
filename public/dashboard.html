@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Scholarship Finder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="navbar-brand">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                Scholarship Finder
+            </a>
+            <div class="navbar-links">
+                <a href="index.html">Home</a>
+                <a href="profile.html">Find Scholarships</a>
+                <a href="dashboard.html" class="active">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-8 mb-8">
+        <div class="flex justify-between items-center mb-8">
+            <h2>Your Dashboard</h2>
+        </div>
+
+        <div class="grid grid-cols-3 mb-8">
+            <div class="card">
+                <div class="card-body text-center">
+                    <p class="text-muted mb-2">Saved Scholarships</p>
+                    <h3 id="savedCount" class="text-primary" style="font-size: 2.5rem;">0</h3>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <p class="text-muted mb-2">Upcoming Deadlines</p>
+                    <h3 class="text-primary" style="font-size: 2.5rem; color: #D97706;">0</h3>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <p class="text-muted mb-2">Applications Sent</p>
+                    <h3 class="text-primary" style="font-size: 2.5rem; color: var(--success);">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="mb-4">Saved Scholarships</h3>
+        <div id="savedGrid" class="grid grid-cols-2">
+            <!-- Saved scholarships here -->
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userId = localStorage.getItem('userId');
+            const grid = document.getElementById('savedGrid');
+            const count = document.getElementById('savedCount');
+
+            if (!userId) {
+                grid.innerHTML = '<p class="text-muted">No saved scholarships yet. Go find some matches!</p>';
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/saved/${userId}`);
+                const data = await res.json();
+
+                count.innerText = data.length;
+
+                if (data.length === 0) {
+                    grid.innerHTML = '<p class="text-muted">You have not saved any scholarships yet.</p>';
+                    return;
+                }
+
+                grid.innerHTML = data.map(sch => `
+                    <div class="card flex flex-col justify-between">
+                        <div class="card-body flex-1">
+                            <h3 class="card-title mb-2">${sch.name}</h3>
+                            <p class="font-bold text-primary mb-4">₹${sch.amount.toLocaleString()}</p>
+                            <div class="flex items-center gap-2 text-sm text-muted">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                Deadline: ${new Date(sch.deadline).toLocaleDateString()}
+                            </div>
+                        </div>
+                        <div class="card-body" style="border-top: 1px solid var(--border); padding: 1rem 1.5rem;">
+                            <button onclick="window.location.href='details.html?id=${sch.id}'" class="btn btn-outline" style="width: 100%;">View Details</button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                grid.innerHTML = '<p class="text-muted">Error loading saved scholarships.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
