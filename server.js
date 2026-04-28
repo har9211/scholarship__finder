@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = "supersecretkey"; // From security.py
 const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "password123";
+const ADMIN_PASSWORD = "123";
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
