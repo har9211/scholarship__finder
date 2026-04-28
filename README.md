@@ -53,6 +53,6 @@ To host this project live:
 
 ## Future Improvements & Optional AI
 - **Real Database**: Replace the in-memory array in `server.js` with Firebase Firestore or MongoDB (Mongoose).
-- **Authentication**: Add JWT-based user login instead of passing userIds via frontend storage.
+- **Authentication**: Add JWT-based user login instead of passing user Ids via frontend storage.
 - **AI Integration**: Use Google Gemini API to analyze a student's inputted "Interests" paragraph and suggest niche, unconventional scholarships.
 - **Email Alerts**: Add `nodemailer` to send automated emails when a saved scholarship deadline is approaching.
