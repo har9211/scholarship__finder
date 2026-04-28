@@ -56,3 +56,4 @@ To host this project live:
 - **Authentication**: Add JWT-based user login instead of passing user Ids via frontend storage.
 - **AI Integration**: Use Google Gemini API to analyze a student's inputted "Interests" paragraph and suggest niche, unconventional scholarships.
 - **Email Alerts**: Add `nodemailer` to send automated emails when a saved scholarship deadline is approaching.
+- **Frontend Migration**: Transition from basic HTML, CSS and javascript to React.js to implement a component-based architecture, improve state management, and enable a more seamless, Single Page Application (SPA) experience.
