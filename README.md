@@ -44,12 +44,12 @@ To host this project live:
 
 1. **GitHub**: Push your code to a GitHub repository.
 2. **Render or Vercel or Heroku**:
-   - Create an account on Render (render.com).
+   - Create an account on Vercel (vercel.com).
    - Create a new "Web Service".
    - Connect your GitHub repo.
    - Build Command: `npm install`
    - Start Command: `npm start`
-3. Render will provide you with a live URL (e.g., `https://scholarship-finder.onrender.com`).
+3. Vercel will provide you with a live URL (e.g., `https://scholarship-finder-nine.vercel.app/`).
 
 ## Future Improvements & Optional AI
 - **Real Database**: Replace the in-memory array in `server.js` with Firebase Firestore or MongoDB (Mongoose).
